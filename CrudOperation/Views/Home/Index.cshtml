@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p style="font-size:2rem;font-weight:700">
+        Unlimited movies, TV shows, and more
+        Watch anywhere. Cancel anytime.
+
+        Ready to watch? Enter your email to create or restart your membership.
+        <br />
+        <br />
+        @if (User.Identity.IsAuthenticated == true)
+        {
+            <a asp-action="Index" asp-controller="Movies" class="btn btn-outline-secondary">Movies</a>
+        }
+        else{
+            <div class="form-group">
+                <a asp-action="Login" asp-controller="Account" class="btn btn-outline-secondary"> Login</a>
+                <a asp-action="register" asp-controller="Account" class="btn btn-outline-secondary">Create New Account</a>
+            </div>
+        }
+    </p>
+</div>

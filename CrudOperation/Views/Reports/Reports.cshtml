@@ -1,0 +1,42 @@
+﻿@model ReportVM
+
+@{
+    ViewData["Title"] = "Reports";
+}
+
+<h1>Reports</h1>
+
+<h4>Reports</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Reports">
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Email" class="text-muted"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Report" class="text-muted"></label>
+                <textarea asp-for="Report" class="form-control" maxlength="2500" rows="5" style="resize=none"
+                          placeholder="Enter Repors"></textarea>
+                <span asp-validation-for="Report" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Report" class="btn btn-primary" />
+                <a asp-action="Index" asp-controller="Home" style="margin-left:70px" class="btn btn-secondary">Home</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    
+}

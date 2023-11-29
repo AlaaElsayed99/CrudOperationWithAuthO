@@ -1,0 +1,111 @@
+﻿@model CrudOperation.VM.RegisterdataViewModel
+
+@{
+    ViewData["Title"] = "register";
+}
+
+<h2>Create New Admin</h2>
+
+<hr />
+<section class="row">
+    <div class="col-md-4">
+        <form asp-action="register" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="All" class="text-danger" hidden></div>
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserName" class="control-label"></label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConfirmPassword" class="control-label"></label>
+                <input asp-for="ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PhoneNumber" class="control-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Image" class="control-label"></label>
+                <input type="file" asp-for="Image" class="form-control" id="Poster" />
+                <span asp-validation-for="Image" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" asp-controller="Home" class="btn btn-secoundary" style="margin-left:250px">Home</a>
+            </div>
+
+
+        </form>
+    </div>
+    <div class="col-md-4" style="">
+
+        <div id="poster-container" class="DD" style="height:250px;width:250px; border-radius: 50%;">
+            <img src="/Images/R.jpg" style="height:250px; width:250px;margin-left:250px; margin-top:50px; border-radius: 50%;" />
+        </div>
+    </div>
+</section>
+
+
+
+
+
+@section Scripts{
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+
+    }
+
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/lib/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+    <script src="~/lib/bootbox.js/bootbox.min.js"></script>
+
+
+    <script>
+        $(document).ready(function () {
+            $('#Poster').on('change', function () {
+                var selectedFile = $(this).val().split('\\').pop();
+                $(this).siblings('label').text(selectedFile);
+
+                var postercontainer = $('#poster-container');
+                var image = window.URL.createObjectURL(this.files[0]);
+
+                postercontainer.removeClass('DD');
+                postercontainer.find('img').attr('src', image);
+            });
+
+        });
+
+    </script>
+}

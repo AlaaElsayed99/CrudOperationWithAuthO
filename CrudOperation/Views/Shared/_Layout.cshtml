@@ -1,0 +1,156 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - DotNetCore5CRUD</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-datepicker/css/bootstrap-datepicker.min.css" rel="stylesheet" />
+    <link href="~/lib/animate.css/animate.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <i class="bi bi-camera-reels"></i>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Movies</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                       
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Movies" asp-action="Index">Home</a>
+                        </li>
+                        @if (User.Identity.IsAuthenticated == true)
+                        {
+
+
+                            <li class="nav-item" style="margin-left:650px;" >
+                                @if (SignInManager.IsSignedIn(User))
+                                {
+                                    var user = await UserManager.GetUserAsync(User);
+                                    if (user.Image != null && user.Image.Length > 0)
+                                    {
+                                        var imageBase64 = Convert.ToBase64String(user.Image);
+                                        var imageSrc = $"data:image;base64,{imageBase64}";
+                                        <img src="@imageSrc" alt="Profile Image" style="max-height:40px;max-width30px; border-radius:50%;" />
+                                    }
+                                    else
+                                    {
+                                        <img src="~/Images/default-user-image.jpg" alt="Default User Image" />
+                                    }
+                                }
+                                else
+                                {
+                                    <img src="~/Images/default-user-image.jpg" alt="Default User Image" />
+                                }
+
+                            </li>
+                            <li>
+                                <a class="nav-link text-dark "
+                                   asp-action="AccountDetails" asp-controller="Account"
+                                   asp-route-Name="@User.Identity.Name">@User.Identity.Name</a>
+                            </li>
+                            <li class="nav-item" style="margin-left:20px;">
+                                <a href="javascript:;" class="btn btn-danger " id="signOutBtn">
+                                    <i class="bi bi-box-arrow-left"></i>
+                                    Sign Out
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" style="margin-left:850px;" asp-controller="Account" asp-action="Login">login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="register">Sign up</a>
+                            </li>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Role" asp-action="register">Register New Admin</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Reports" asp-action="Index">Reports</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2023 - Movies - <a asp-area="" asp-controller="Reports" asp-action="Reports">Make a Report</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+    <script src="~/lib/bootbox.js/bootbox.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    @await Component.InvokeAsync("NToastNotify")
+</body>
+</html>
+<script>
+    document.getElementById("signOutBtn").addEventListener("click", function () {
+        // Display a confirmation dialog using Bootbox
+        bootbox.confirm({
+            message: "Are you sure you want to sign out?",
+            buttons: {
+                confirm: {
+                    label: "Yes",
+                    className: "btn-danger"
+                },
+                cancel: {
+                    label: "No",
+                    className: "btn-default"
+                }
+            },
+            callback: function (result) {
+                // This function will be called when the user clicks on either "Yes" or "No"
+                if (result) {
+                    // If the user clicked "Yes," perform the sign-out action using AJAX
+                    performSignOut();
+                }
+                // If the user clicked "No," do nothing
+            }
+        });
+    });
+
+    // Function to perform the sign-out action using AJAX
+    function performSignOut() {
+        // Send an AJAX request to the server to sign out
+        $.ajax({
+            type: "POST",
+            url: "/Account/signout", // Replace this with the actual URL of your sign-out action
+            success: function () {
+                // If the sign-out is successful, reload the page or redirect to the sign-out page
+                window.location.href = "/Home/Index"; // You can customize this based on your requirements
+            },
+            error: function () {
+                // Handle any error that may occur during the sign-out process
+                alert("Failed to sign out. Please try again.");
+            }
+        });
+    }
+</script>

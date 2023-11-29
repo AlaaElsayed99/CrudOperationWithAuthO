@@ -1,0 +1,80 @@
+﻿@model IEnumerable<CrudOperation.Models.Reports>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Reports</h1>
+<div class="mt-4">
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i> No Reports
+        </div>
+    }
+
+    @foreach (var item in Model) {
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    Reoprts From @item.Email
+                </div>
+                <div class="card-body">
+                    
+                    <p class="card-text" style="font-size:medium;font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">@item.Report</p>
+                    <a href="javascript:;" class="btn btn-danger js-delete" data-id="@item.Id">
+                        <i class="bi bi-trash"></i>
+                        Delete
+                    </a>
+            </div>
+            </div>
+        </div>
+
+    }
+
+</div>
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            $('.js-delete').on('click', function () {
+                var btn = $(this);
+
+                bootbox.confirm({
+                    message: "Are you sure that you need to delete this movie?",
+                    buttons: {
+                        confirm: {
+                            label: 'Yes',
+                            className: 'btn-danger'
+                        },
+                        cancel: {
+                            label: 'No',
+                            className: 'btn-outline-secondary'
+                        }
+                    },
+                    callback: function (result) {
+                        if (result) {
+                            $.ajax({
+                                url: '/Reports/Delete/' + btn.data('id'),
+                                success: function () {
+                                    var movieContainer = btn.parents('.col-12');
+                                    movieContainer.addClass('animate__animated animate__zoomOut');
+
+                                    setTimeout(function () {
+                                        movieContainer.remove();
+                                    }, 1000);
+
+                                    toastr.success('Report deleted');
+                                },
+                                error: function () {
+                                    toastr.error('Something went wrong!');
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}
+
